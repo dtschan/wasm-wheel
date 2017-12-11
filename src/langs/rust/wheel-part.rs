@@ -1,8 +1,4 @@
-// There are some issues compiling the rand crate using wasm32-unknown-unknown, so
-// I prefer the import it from JavaScript
-extern {
-  fn random() -> f64;
-}
+extern crate rand;
 
 #[no_mangle]
 pub fn name() -> *const u8 {
@@ -13,7 +9,5 @@ pub fn name() -> *const u8 {
 #[allow(non_snake_case)]
 #[no_mangle]
 pub fn feelingLucky() -> i32 {
-	unsafe {
-		return ((random() * 100.0) as i32) + 1;
-	}
+	return (((rand::random::<u8>() + 1) as f32) / 2.56).ceil() as i32;
 }

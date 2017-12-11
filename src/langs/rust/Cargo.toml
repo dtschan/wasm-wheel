@@ -1,0 +1,14 @@
+[package]
+name = "wasm-wheel"
+version = "1.0.0"
+authors = ["Boyan Mihaylov <hey@boyan.io>"]
+
+[dependencies]
+rand = "0.3.18"
+
+[patch.crates-io]
+rand = { git = "https://github.com/aochagavia/rand.git", branch = "wasm" }
+
+[lib]
+path = "wheel-part.rs"
+crate-type = ["cdylib"]

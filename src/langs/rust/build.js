@@ -1,15 +1,17 @@
 const { exec } = require('child_process');
+const fs = require('fs');
 
 exports.task = (done) => {
     const buildDir = `${__dirname}/../../../build/wasm`;
 
-    const ls = exec(`rustc +nightly --target wasm32-unknown-unknown --crate-type=cdylib -o ${buildDir}/wheel-part-rust.wasm ${__dirname}/wheel-part.rs`);
-    ls.stdout.pipe(process.stdout)
-    ls.stderr.pipe(process.stdout)
-    ls.on('exit', (code) => {
-        if (code !== 0)
-            throw Error('Error when building the Java wheel part');
+    exec('cargo  +nightly build --target wasm32-unknown-unknown --release', { cwd: __dirname })
+        .then(({ stdout }) => {
+            console.log(stdout);
 
-        done();
-    });
+            fs.copyFileSync(`${__dirname}/target/wasm32-unknown-unknown/release/wasm_wheel.wasm`, `${buildDir}/wheel-part-rust.wasm`);
+            done();
+        }, ({ stderr, cmd }) => {
+            console.log(stderr);
+            throw Error(`Error when running: ${cmd}`);
+        });
 };
