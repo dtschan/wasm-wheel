@@ -4,10 +4,7 @@ version = "1.0.0"
 authors = ["Boyan Mihaylov <hey@boyan.io>"]
 
 [dependencies]
-rand = "0.3.18"
-
-[patch.crates-io]
-rand = { git = "https://github.com/aochagavia/rand.git", branch = "wasm" }
+rand = "0.4"
 
 [lib]
 path = "wheel-part.rs"
