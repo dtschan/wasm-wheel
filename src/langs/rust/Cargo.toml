@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = ["Boyan Mihaylov <hey@boyan.io>"]
 
 [dependencies]
-rand = "0.4"
+rand = "0.5"
 
 [lib]
 path = "wheel-part.rs"
