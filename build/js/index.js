@@ -26,8 +26,9 @@
     };
 
     const defaultReadStringFromMemory = (exports, heap) => utf8ToString(heap, exports.name());
+    wheel.defaultReadStringFromMemory = defaultReadStringFromMemory;
 
-    const defaultWasmLoader = (wasmFile, readStringFromMemory) =>
+    const defaultWasmLoader = (wasmFile, readStringFromMemory, extraImports) =>
         fetch(`wasm/${wasmFile}`)
             .then(response => response.arrayBuffer())
             .then(bytes => WebAssembly.compile(bytes))
@@ -35,14 +36,15 @@
                 // For the MVP, there is only one memory for all modules, however
                 // in the future, each module would probably get its own memory    
                 const memory = new WebAssembly.Memory({ initial: 2, maximum: 10 });
-                return WebAssembly.instantiate(wasmModule, {
-                    env: {
+                const imports = Object.assign({}, extraImports || {}, {
+                    env: Object.assign({}, (extraImports || {}).env || {}, {
                         memory,
                         // Some languages do not support random number generation easily,
                         // so we allow them to reuse JavaScript's API
                         random: () => Math.random()
-                    }
-                })
+                    })
+                });
+                return WebAssembly.instantiate(wasmModule, imports)
                     .then(instance => ({ exports: instance.exports, memory }));
             })
             .then(({ exports, memory }) => {
@@ -56,7 +58,8 @@
                     }
                 });
                 document.dispatchEvent(event);
-            });
+            })
+            .catch(err => console.error(err));
     wheel.defaultWasmLoader = defaultWasmLoader;
 
     fetch(`wheel-parts.json?v=${new Date().getTime()}`)
