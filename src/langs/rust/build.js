@@ -12,6 +12,7 @@ exports.task = (done) => {
             throw Error('Error when building the Rust wheel part');
 
         fs.copyFileSync(`${__dirname}/target/wasm32-unknown-unknown/release/wasm_wheel.wasm`, `${buildDir}/wheel-part-rust.wasm`);
+        fs.copyFileSync(`${__dirname}/wasm-loader.js`, `${buildDir}/wheel-part-rust.wasm-loader.js`);
         done();
     });
 };
