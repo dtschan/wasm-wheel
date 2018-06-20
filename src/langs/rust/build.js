@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 exports.task = (done) => {
     const buildDir = `${__dirname}/../../../build/wasm`;
 
-    const ls = exec('cargo +nightly build --target wasm32-unknown-unknown --release', { cwd: __dirname });
+    const ls = exec('cargo build --target wasm32-unknown-unknown --release', { cwd: __dirname });
     ls.stdout.pipe(process.stdout)
     ls.stderr.pipe(process.stdout)
     ls.on('exit', (code) => {
